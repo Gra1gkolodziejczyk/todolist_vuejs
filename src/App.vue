@@ -1,134 +1,58 @@
-<script setup lang="ts">
-import { ref, onMounted, watch } from "vue";
-
-interface Todo {
-  todo: string;
-  done: boolean;
-}
-
-const todos = ref<Todo[]>([]);
-const text = ref<string>("");
-const inputError = ref<boolean>(false);
-
-function addTodo() {
-  if (text.value.trim() === "") {
-    inputError.value = true;
-    return;
-  } else {
-    inputError.value = false;
-  }
-
-  todos.value.unshift({
-    todo: text.value,
-    done: false,
-  });
-
-  text.value = "";
-}
-
-function deleteTodo(todo: Todo) {
-  todos.value = todos.value.filter((x) => x !== todo);
-}
-
-watch(
-  todos,
-  (newTodoValue) => {
-    localStorage.setItem("todos", JSON.stringify(newTodoValue));
-  },
-  { deep: true }
-);
-
-onMounted(() => {
-  const savedTodos = localStorage.getItem("todos");
-  if (savedTodos) {
-    todos.value = JSON.parse(savedTodos) as Todo[];
-  }
-});
-</script>
-
 <template>
-  <main class="app">
-    <section class="greeting">
-    </section>
-
-    <div class="input-section">
-      <section class="create-todo">
-        <h3>Ajouter une tâche</h3>
-        <form class="form" @submit.prevent="addTodo">
-          <input
-            type="text"
-            placeholder="écrit la tâche à faire"
-            v-model="text"
-          />
-
-          <div class="input-add">
-            <input type="submit" value="Ajouter" />
-          </div>
-        </form>
-        <span v-if="inputError" class="error-message">Veuillez entrer une tâche avant d'ajouter</span>
-      </section>
+  <div>
+    <AppForm @create="addTodo" @error="editError"></AppForm>
+    <AppErrorText :message="errorMessage" v-if="errorMessage.length > 0"></AppErrorText>
+    <div v-for="(todo, index) in todoList" :key="index">
+      <AppTodoCard :todo="todo" v-model="todo.done" @delete="deleteTodo"></AppTodoCard>
     </div>
-    <div class="todo-section">
-      <section class="todo-list">
-        <h2 v-show="todos.length === 0">Pas encore de tâches...</h2>
-
-        <div class="list">
-          <div :key="todo.todo" v-for="todo in todos" :class="`todo-item ${todo.done && 'done'}`">
-            <label class="label">
-              <input type="checkbox" v-model="todo.done" />
-            </label>
-
-            <div class="todo-content">
-              <input type="text" v-model="todo.todo"/>
-            </div>
-
-            <div class="action-delete">
-              <button class="delete" @click="deleteTodo(todo)">Supprimer</button>
-            </div>
-          </div>
-        </div>
-      </section>
-    </div>
-  </main>
+  </div>
 </template>
 
-<style>
-.app {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  margin-top: 10%;
+<script setup lang="ts">
+import { reactive, ref } from 'vue';
+import AppForm from './components/AppForm.vue';
+import { TodoType } from '@/type/todo';
+import AppTodoCard from './components/AppTodoCard.vue';
+import AppErrorText from './components/AppErrorText.vue';
+
+const todoList = reactive<TodoType[]>([])
+const errorMessage = ref("");
+
+function addTodo(newTodo: TodoType) {
+  if (lastValidation(newTodo)) {
+    errorMessage.value = ""
+    todoList.push(newTodo)
+  }
 }
 
-.todo-item {
-  margin-top: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
+function deleteTodo(todoToRemove: TodoType) {
+  const index = todoList.indexOf(todoToRemove);
+  todoList.splice(index, 1);
 }
 
-.error-message {
-  color: red;
+function editError(message: string) {
+  errorMessage.value = message;
 }
 
-.form {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: row;
+function lastValidation(newTodo: TodoType): boolean {
+  let count = 0;
+  let totalTime = newTodo.time;
+  todoList.forEach(todo => {
+    if (todo.user === newTodo.user) {
+      count++;
+      totalTime += todo.time
+    }
+  });
+  if (count > 3) {
+    errorMessage.value = "La personne à déjà 3 tâches."
+    return false;
+  }
+  if (totalTime > 10) {
+    errorMessage.value = "Le temps depassera 10h pour cette personne."
+    return false;
+  }
+  return true;
 }
+</script>
 
-.input-add {
-  padding-left: 10px;
-}
-
-.label {
-  padding-right: 10px;
-}
-
-.action-delete {
-  padding-left: 10px;
-}
-</style>
+<style scoped></style>
