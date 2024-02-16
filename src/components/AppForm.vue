@@ -1,11 +1,22 @@
 <template>
   <div>
-      <form :onsubmit="validateAndEmit">
-          <AppInput v-model="title" :req="true" placeholder="Titre"></AppInput>
-          <AppInput v-model="content" :req="true" placeholder="Contenu"></AppInput>
-          <AppTimeInput v-model="time" :req="true" placeholder=""></AppTimeInput>
-          <AppSelectList v-model="user" :req="true" :values="['Jean', 'Eric', 'Joe', 'Marco', 'Patrick']"></AppSelectList>
-          <AppButton text="New todo" type="submit"></AppButton>
+      <form class="flex justify-center text-center flex-col pr-96 pl-96" :onsubmit="validateAndEmit">
+          <div class="pt-3 pb-3">
+            <AppInput v-model="title" :req="true" placeholder="Titre"></AppInput>
+          </div>
+          <div class="pt-3 pb-3">
+            <AppInput v-model="content" :req="true" placeholder="Contenu"></AppInput>
+          </div>
+          <div class="pt-3 pb-3 flex flex-row justify-center text-center">
+          <h3 class="flex justify-center text-center pt-2 pr-3">Temps aloué à cette tâche: </h3>
+            <AppTimeInput v-model="time" :req="true" placeholder=""></AppTimeInput>
+          </div>
+          <div class="pt-3 pb-3">
+            <AppSelectList v-model="user" :req="true" :values="['Jean', 'Eric', 'Joe', 'Marco', 'Patrick']"></AppSelectList>
+          </div>
+          <div class="pt-3 pb-3">
+            <AppButton text="New todo" type="submit"></AppButton>
+          </div>
       </form>
   </div>
 </template>
@@ -33,7 +44,7 @@ const emit = defineEmits<Emit>();
 function validateAndEmit(event: SubmitEvent) {
   event.preventDefault();
   if (title.value === "") {
-      emit("error", "Titre requit")
+    emit("error", "La personne à déjà 3 tâches.")
   } else if (content.value === "") {
       emit("error", "Contenu requit")
   } else if (time.value <= 0 || time.value > 10) {

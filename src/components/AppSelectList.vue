@@ -10,9 +10,14 @@
 
 <template>
   <div>
-      <select v-model="selection" :required="req">
-          <option v-for="(value, index) in values" :key="index" :value="value" />
-      </select>
+    <select 
+      v-model="selection" 
+      :required="req" 
+      class="appearance-none bg-white border border-green-500 hover:border-green-500 rounded-md py-2 px-4 block w-full leading-normal focus:outline-none focus:border-green-800"
+    >
+      <option disabled value="">Sélectionner un responsable</option>
+      <option v-for="(value, index) in values" :key="index" :value="value">{{ value }}</option>
+    </select>
   </div>
 </template>
 

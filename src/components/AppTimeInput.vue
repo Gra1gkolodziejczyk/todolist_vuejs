@@ -8,7 +8,14 @@
 
 <template>
   <div>
-      <input type="number" min="0" max="10" v-model="time" :required="req" />
+    <select 
+        v-model="time" 
+        :required="req" 
+        class="mr-2 appearance-none bg-white border border-green-500 hover:border-green-800 rounded-md py-2 px-4 leading-normal focus:outline-none focus:border-green-800"
+    >
+        <option disabled value="">Heures</option>
+        <option v-for="hour in 24" :key="hour" :value="hour">{{ hour }}</option>
+    </select>
   </div>
 </template>
 

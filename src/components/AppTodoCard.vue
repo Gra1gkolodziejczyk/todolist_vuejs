@@ -20,13 +20,20 @@ defineEmits<Emit>();
 </script>
 
 <template>
-  <div>
+  <div class="flex justify-center text-center flex-col border border-green-500 rounded p-4 max-w-xs">
     <AppTodoTitle :title="todo.title"></AppTodoTitle>
     <AppTodoContent :text="todo.content"></AppTodoContent>
-    <AppTodoCardText :text="'Estimated time : ' + todo.time + ' h'"></AppTodoCardText>
-    <AppTodoCardText :text="'Assign : ' + todo.user"></AppTodoCardText>
+    <AppTodoCardText class="font-thin" :text="'Temps estimé : ' + todo.time + ' h'"></AppTodoCardText>
+    <AppTodoCardText class="font-bold" :text="'La tâche est faite par : ' + todo.user"></AppTodoCardText>
     <AppCheckbox v-model="done"></AppCheckbox>
-    <AppButton text="Supprimer" type="button" @click="$emit('delete', todo)"></AppButton>
+    <div class="flex flex-row justify-center text-center">
+      <div class="pt-3 pr-3">
+      <AppButton text="Supprimer" type="button" @click="$emit('delete', todo)"></AppButton>
+    </div>
+    <div class="pt-3">
+      <AppButton text="Editer" type="button" @click="$emit('delete', todo)"></AppButton>
+    </div>
+    </div>
   </div>
 </template>
 

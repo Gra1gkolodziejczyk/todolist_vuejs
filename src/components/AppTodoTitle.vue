@@ -6,8 +6,8 @@
 </script>
 
 <template>
-  <div>
-      <h1>{{ title }}</h1>
+  <div class="flex justify-center text-center">
+      <h1 className="text-xl font-bold">{{ title }}</h1>
   </div>
 </template>
 

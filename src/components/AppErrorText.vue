@@ -7,7 +7,7 @@ const {message} = defineProps<Props>()
 
 <template>
   <div>
-      <p>{{ message }}</p>
+      <p className="text-red-500 text-sm">{{ message }}</p>
   </div>
 </template>
 
